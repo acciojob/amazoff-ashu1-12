@@ -3,6 +3,7 @@ package com.driver;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -144,10 +145,18 @@ public class OrderRepository {
 		DeliveryPartner dp =partnerMap.remove(partnerId);
 		//make the order unassigned
 		//--to make order assign , make changes to orderToPartnerMap
-		for(String key:orderToPartnerMap.keySet()) {
+		/*for(String key:orderToPartnerMap.keySet()) {
 			if(orderToPartnerMap.get(key).equals(partnerId))
-				orderToPartnerMap.remove(key);
-		}
+				orderToPartnerMap.remove(key);//This will cause ConcurrentModificationException
+		}*/
+		Set<String> orderKeys = orderToPartnerMap.keySet();
+		Iterator<String> iterator = orderKeys.iterator();
+		while (iterator.hasNext()) {
+		    String s = iterator.next();
+		    if (s.equals("b")) {
+		        iterator.remove(); // This safely removes the element during iteration
+		    }
+	    }
 		//---remove orderlist from partnerToOrderMap
 		partnerToOrderMap.remove(partnerId);
 		
