@@ -16,7 +16,6 @@ public class OrderRepository {
 	private HashMap<String, HashSet<String>> partnerToOrderMap;
 	private HashMap<String, String> orderToPartnerMap;
 	
-	private List<String> unassigneOrderList;
 
 	public OrderRepository() {
 		this.orderMap = new HashMap<String, Order>();
@@ -27,10 +26,16 @@ public class OrderRepository {
 
 	public void saveOrder(Order order) {
 		// your code here
+		if(order == null) {
+			throw new NullPointerException("Order is Empty");
+		}
 		orderMap.put(order.getId(), order);
 	}
 
 	public void savePartner(String partnerId) {
+		if(partnerId == null) {
+			throw new NullPointerException("PartnerId is not provided");
+		}
 		DeliveryPartner dp = new DeliveryPartner(partnerId);
 		partnerMap.put(partnerId, dp);
 		// your code here
@@ -38,6 +43,10 @@ public class OrderRepository {
 	}
 
 	public void saveOrderPartnerMap(String orderId, String partnerId) {
+		if(orderId == null || partnerId== null) {
+			throw new NullPointerException("OrderId or PartnerId cannot be null");
+		
+		}
 		if (orderMap.containsKey(orderId) && partnerMap.containsKey(partnerId)) {
 			// your code here
 			// add order to given partner's order list
@@ -47,7 +56,11 @@ public class OrderRepository {
 				orderPartnerSet.add(orderId);
 			}else {
 				orderPartnerSet = partnerToOrderMap.get(partnerId);//--check partnerId available in partnerOrderMap
-				orderPartnerSet.add(orderId);
+				//--check oredrId is already present or not
+				if(orderToPartnerMap.containsKey(orderId))
+					throw new IllegalArgumentException(orderId+" is already assigned to another delivery partner");
+				else
+					orderPartnerSet.add(orderId);
 			}
 			partnerToOrderMap.put(partnerId, orderPartnerSet);
 			// increase order count of partner
@@ -62,6 +75,10 @@ public class OrderRepository {
 	public Order findOrderById(String orderId) {
 //		return null;
 		// your code here
+		if(orderId == null) {
+			throw new NullPointerException("OrderId cannot be null");
+		
+		}
 		Order order = orderMap.get(orderId);
 		return order;
 	}
@@ -69,25 +86,39 @@ public class OrderRepository {
 	public DeliveryPartner findPartnerById(String partnerId) {
 //		return null;
 		// your code here
+		if(partnerId== null) {
+			throw new NullPointerException("PartnerId cannot be null");
+		
+		}
 		DeliveryPartner deliveryPartner= partnerMap.get(partnerId);
 		return deliveryPartner;
 	}
 
 	public Integer findOrderCountByPartnerId(String partnerId) {
+		if(partnerId== null) {
+			throw new NullPointerException("PartnerId cannot be null");
 		
+		}
 //		return null;
 		// your code here
 		HashSet<String> partnerOrderSet = partnerToOrderMap.get(partnerId);
+		if(partnerOrderSet==null)
+			return 0;
+		
 		return partnerOrderSet.size();
 		
 	}
 
 	public List<String> findOrdersByPartnerId(String partnerId) {
+		if(partnerId== null) {
+			throw new NullPointerException("PartnerId cannot be null");
+		
+		}
 		//return null;
 		// your code here
 		HashSet<String> partnerOrderSet = partnerToOrderMap.get(partnerId);
-		if(partnerOrderSet.isEmpty())
-			return null;
+		if(partnerOrderSet==null)
+			return new ArrayList<>();
 		List<String> partnerOrderList =new ArrayList<>(partnerOrderSet); 
 		return partnerOrderList ;
 	}
@@ -103,6 +134,10 @@ public class OrderRepository {
 	}
 
 	public void deletePartner(String partnerId) {
+		if(partnerId== null) {
+			throw new NullPointerException("PartnerId cannot be null");
+		
+		}
 		// your code here
 		// delete partner by ID
 		//delete partner from partnerMap
@@ -110,7 +145,7 @@ public class OrderRepository {
 		//make the order unassigned
 		//--to make order assign , make changes to orderToPartnerMap
 		for(String key:orderToPartnerMap.keySet()) {
-			if(orderToPartnerMap.get(key).equals(key))
+			if(orderToPartnerMap.get(key).equals(partnerId))
 				orderToPartnerMap.remove(key);
 		}
 		//---remove orderlist from partnerToOrderMap
@@ -119,6 +154,10 @@ public class OrderRepository {
 	}
 
 	public void deleteOrder(String orderId) {
+		if(orderId== null) {
+			throw new NullPointerException("orderId cannot be null");
+		
+		}
 		// your code here
 		// delete order by ID
 		Order order=orderMap.remove(orderId);
@@ -146,6 +185,10 @@ public class OrderRepository {
 	}
 
 	public Integer findOrdersLeftAfterGivenTimeByPartnerId(String timeString, String partnerId) {
+		if(partnerId== null || timeString == null) {
+			throw new NullPointerException("PartnerId or timeString cannot be null");
+		
+		}
 		String[] time=timeString.split(":");
 		Integer count=0;
 		int givenTime=Integer.parseInt(time[0])*60+Integer.parseInt(time[1]);
@@ -160,7 +203,10 @@ public class OrderRepository {
 	}
 
 	public String findLastDeliveryTimeByPartnerId(String partnerId) {
+		if(partnerId== null) {
+			throw new NullPointerException("PartnerId cannot be null");
 		
+		}
 		// your code here
 		// code should return string in format HH:MM
 		Integer time=Integer.MIN_VALUE;
