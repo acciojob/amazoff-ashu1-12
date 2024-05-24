@@ -153,8 +153,8 @@ public class OrderRepository {
 		Set<String> orderKeys = orderToPartnerMap.keySet();
 		Iterator<String> iterator = orderKeys.iterator();
 		while (iterator.hasNext()) {
-		    String s = iterator.next();
-		    if (s.equals(partnerId)) {
+		    String key = iterator.next();
+		    if (orderToPartnerMap.get(key).equals(partnerId)) {
 		        iterator.remove(); // This safely removes the element during iteration
 		    }
 	    }
