@@ -91,6 +91,7 @@ public class OrderRepository {
 			throw new NullPointerException("PartnerId cannot be null");
 		
 		}
+		
 		DeliveryPartner deliveryPartner= partnerMap.get(partnerId);
 		return deliveryPartner;
 	}
@@ -153,7 +154,7 @@ public class OrderRepository {
 		Iterator<String> iterator = orderKeys.iterator();
 		while (iterator.hasNext()) {
 		    String s = iterator.next();
-		    if (s.equals("b")) {
+		    if (s.equals(partnerId)) {
 		        iterator.remove(); // This safely removes the element during iteration
 		    }
 	    }
